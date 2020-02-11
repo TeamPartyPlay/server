@@ -7,9 +7,7 @@ const UserModel = require('./../models/User');
 const router = express.Router();
 
 router.get('/', tokenAuth, (req, res) => {
-  const { name } = req.user;
-  console.log(name);
-  res.send({ connection: 'success' });
+  res.send({ ...req.user });
 });
 
 router.post('/', async (req, res) => {
