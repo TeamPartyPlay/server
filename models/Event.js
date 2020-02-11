@@ -14,6 +14,7 @@ const EventModel = new model(
     public: { type: Boolean, required: true },
     invites: [{ type: ObjectId, ref: 'Invite', required: true }],
     tags: [{ type: String }],
+    createdAt: { type: Date, required: true },
   }),
 );
 
