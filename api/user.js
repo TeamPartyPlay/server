@@ -7,8 +7,6 @@ const UserModel = require('./../models/User');
 const router = express.Router();
 
 router.get('/', tokenAuth, (req, res) => {
-  const { name } = req.user;
-  console.log(name);
   res.send({ connection: 'success' });
 });
 
@@ -48,7 +46,6 @@ router.post('/login', async (req, res) => {
           const token = jwt.sign(user, 'secret');
           const properties = { httpOnly: true };
           if (req.body.remember) {
-            // time till cookie experation, in ms
             properties.maxAge = 10000000000000;
           }
           res.cookie('token', token, properties);

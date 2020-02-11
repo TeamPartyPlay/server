@@ -1,14 +1,19 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 // const SpotifyModel = require('../models/Spotify');
 const UserModel = require('../models/User');
 const { clientId, clientSecret } = require('../config');
+const TokenAuth = require('./../middleware/tokenAuth');
 
 const router = express.Router();
 
 // Get Spotify access, refresh, expiration
-router.get('/', async (req, res) => {
-  UserModel.find({}, (err, users) => {
-    res.send({ users });
+router.get('/', TokenAuth, async (req, res) => {
+  UserModel.findById(req.user._id, (err, user) => {
+    if (err) res.send({ error: `User: ${req.user.username} cannot be found` });
+    else {
+      res.send({ valid: true });
+    }
   });
 });
 
