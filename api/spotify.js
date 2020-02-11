@@ -9,12 +9,15 @@ const router = express.Router();
 
 // Get Spotify access, refresh, expiration
 router.get('/', TokenAuth, async (req, res) => {
-  UserModel.findById(req.user._id, (err, user) => {
-    if (err) res.send({ error: `User: ${req.user.username} cannot be found` });
-    else {
-      res.send({ valid: true });
-    }
-  });
+  UserModel
+    .findById(req.user._id)
+    .populate('spotify')
+    .exec((err, user) => {
+      if (err) res.send({ error: `User: ${req.user.username} cannot be found` });
+      else {
+        res.send({ valid: true });
+      }
+    });
 });
 
 // Use accesses Client Secret and Client ID
@@ -22,7 +25,7 @@ router.get('/secret', (req, res) => {
   res.send({ clientId, clientSecret });
 });
 
-// Stream Playback to Device
+// TODO: Stream Playback to Device
 router.get('/stream/:eventId', (req, res) => {
   res.send({ clientId, clientSecret });
 });

@@ -7,7 +7,7 @@ const UserModel = require('./../models/User');
 const router = express.Router();
 
 router.get('/', tokenAuth, (req, res) => {
-  res.send({ connection: 'success' });
+  res.send({ connection: true });
 });
 
 router.post('/', async (req, res) => {
@@ -28,10 +28,23 @@ router.post('/', async (req, res) => {
       });
       await user.save();
       res.status(200).send(user);
+    } else {
+      throw Error;
     }
   } catch (error) {
     res.status(500).send({ error });
   }
+});
+
+router.put('/', tokenAuth, async (req, res) => {
+  const {
+    username, password, newPassword, confirmPassword, email, spotify,
+  } = req.body;
+  const validate = ![username, password, newPassword, confirmPassword, email, spotify].filter((e) => !e).length;
+
+  if (validate);
+
+  res.send({ connection: true });
 });
 
 router.post('/login', async (req, res) => {
