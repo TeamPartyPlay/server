@@ -6,7 +6,7 @@ const BaseSchema = new Schema({
 });
 
 BaseSchema.pre(/^update|save/, (next) => {
-  if (this.createdAt) { this.update = Date.now(); }
+  if (this.createdAt) { this.createdAt = Date.now(); }
   this.updatedAt = Date.now();
   next();
 });
