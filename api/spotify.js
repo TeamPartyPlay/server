@@ -3,21 +3,20 @@ const express = require('express');
 // const SpotifyModel = require('../models/Spotify');
 const UserModel = require('../models/User');
 const { clientId, clientSecret } = require('../config');
-const TokenAuth = require('./../middleware/tokenAuth');
+const tokenAuth = require('./../middleware/tokenAuth');
 
 const router = express.Router();
 
 // Get Spotify access, refresh, expiration
-router.get('/', TokenAuth, async (req, res) => {
-  UserModel
-    .findById(req.user._id)
-    .populate('spotify')
-    .exec((err, user) => {
-      if (err) res.send({ error: `User: ${req.user.username} cannot be found` });
-      else {
-        res.send({ valid: true });
-      }
-    });
+router.get('/', tokenAuth, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user._id);
+    const spotify = await user.populate('spotify');
+    console.log(spotify);
+    res.status(200).send({ spotify });
+  } catch (error) {
+    res.status(500).send({ error });
+  }
 });
 
 // Use accesses Client Secret and Client ID

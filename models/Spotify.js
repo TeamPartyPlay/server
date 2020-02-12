@@ -5,7 +5,7 @@ const { ObjectId } = Schema;
 const SpotifyModel = new model(
   'Spotify',
   new Schema({
-    accessToken: { type: ObjectId, ref: 'User', required: true },
+    accessToken: { type: String, required: true },
     refreshToken: { type: Number, required: true },
     expires: { type: Date, required: true },
   }),
