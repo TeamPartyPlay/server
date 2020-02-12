@@ -1,14 +1,19 @@
 const { Schema, model } = require('mongoose');
+const BaseSchema = require('./BaseSchema');
 
 const { ObjectId } = Schema;
 
-const SpotifyModel = new model(
+const SpotifySchema = BaseSchema();
+
+SpotifySchema.add({
+  accessToken: { type: String, required: true },
+  refreshToken: { type: Number, required: true },
+  expires: { type: Date, required: true },
+});
+
+const SpotifyModel = model(
   'Spotify',
-  new Schema({
-    accessToken: { type: String, required: true },
-    refreshToken: { type: Number, required: true },
-    expires: { type: Date, required: true },
-  }),
+  SpotifySchema,
 );
 
 module.exports = SpotifyModel;

@@ -1,4 +1,5 @@
 const express = require('express');
+const tokenAuth = require('./../middleware/tokenAuth');
 
 const router = express.Router();
 
@@ -8,7 +9,10 @@ router.get('/', (req, res) => {
 
 router.get('/:eventId', (req, res) => {
   const { eventId } = req.params;
-  console.log(eventId);
+  res.send({ connection: 'success' });
+});
+
+router.post('/vote', tokenAuth, (req, res) => {
   res.send({ connection: 'success' });
 });
 

@@ -1,13 +1,19 @@
 const { Schema, model } = require('mongoose');
+const BaseSchema = require('./BaseSchema');
 
 const { ObjectId } = Schema;
 
-const InviteModel = new model(
+const InviteSchema = BaseSchema();
+
+InviteSchema.add({
+  user: { type: ObjectId, ref: 'User', required: true },
+  status: { type: Number, required: true },
+  sent: { type: Boolean, required: true },
+});
+
+const InviteModel = model(
   'Invite',
-  new Schema({
-    user: { type: ObjectId, ref: 'User', required: true },
-    status: { type: Number, required: true },
-  }),
+  InviteSchema,
 );
 
 module.exports = InviteModel;

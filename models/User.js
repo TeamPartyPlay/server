@@ -1,26 +1,23 @@
 const { Schema, model } = require('mongoose');
+const BaseSchema = require('./BaseSchema');
 
 const { ObjectId } = Schema;
+const UserSchema = BaseSchema();
 
-const UserSchema = new Schema({
+UserSchema.add({
   username: { type: String, required: true },
   password: { type: String, required: true },
   email: [{ type: String, required: true }],
-  createdAt: { type: Date },
-  updatedAt: { type: Date },
   spotify: { type: ObjectId, ref: 'Spotify' },
+  event: { type: ObjectId, ref: 'Event' },
+  pastEvents: [{ type: ObjectId, ref: 'Event' }],
+  followers: [{ type: ObjectId, ref: 'User' }],
+  following: [{ type: ObjectId, ref: 'User' }],
 });
 
 const UserModel = model(
   'User',
   UserSchema,
 );
-
-UserSchema.pre('save', (next) => {
-  if (this.createdAt) { this.update = Date.now(); }
-  this.updatedAt = Date.now();
-  next();
-});
-
 
 module.exports = UserModel;
