@@ -8,11 +8,12 @@ UserSchema.add({
   username: { type: String, required: true },
   password: { type: String, required: true },
   email: [{ type: String, required: true }],
-  spotify: { type: ObjectId, ref: 'Spotify' },
-  event: { type: ObjectId, ref: 'Event' },
-  pastEvents: [{ type: ObjectId, ref: 'Event' }],
-  followers: [{ type: ObjectId, ref: 'User' }],
-  following: [{ type: ObjectId, ref: 'User' }],
+  spotify: { type: ObjectId, ref: 'Spotify', default: null },
+  event: { type: ObjectId, ref: 'Event', default: null },
+  pastEvents: [{ type: ObjectId, ref: 'Event', default: null }],
+  followers: [{ type: ObjectId, ref: 'User', default: null }],
+  following: [{ type: ObjectId, ref: 'User', default: null }],
+  profile: { type: ObjectId, ref: 'Image', default: null },
 });
 
 const UserModel = model(
