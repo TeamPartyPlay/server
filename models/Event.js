@@ -13,8 +13,9 @@ EventSchema.add({
   start: { type: Date, required: true },
   end: { type: Date },
   public: { type: Boolean, required: true },
-  invites: [{ type: ObjectId, ref: 'Invite', required: true }],
-  tags: [{ type: String }],
+  invites: [{ type: ObjectId, ref: 'Invite', default: null }],
+  attendees: [{ type: ObjectId, ref: 'User', default: null }],
+  tags: [{ type: String, default: null }],
 });
 
 const EventModel = model(

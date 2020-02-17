@@ -13,6 +13,7 @@ router.get('/:eventId', (req, res) => {
 });
 
 router.post('/vote', tokenAuth, (req, res) => {
+  const { event, playlist, song } = req.body;
   res.send({ connection: 'success' });
 });
 
