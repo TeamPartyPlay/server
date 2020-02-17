@@ -10,9 +10,10 @@ const router = express.Router();
 // Get Spotify access, refresh, expiration
 router.get('/', tokenAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.user._id);
-    const spotify = await user.populate('spotify');
-    console.log(spotify);
+    const user = await UserModel.findById(req.user._id).populate('spotify');
+    const { spotify } = user;
+    if (!user) throw Error("User Doesn't Exist");
+    if (!user.spotify) throw Error('User is not logged in Spotify');
     res.status(200).send({ spotify });
   } catch (error) {
     res.status(500).send({ error });
