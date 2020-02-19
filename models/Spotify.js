@@ -7,7 +7,7 @@ const SpotifySchema = BaseSchema();
 
 SpotifySchema.add({
   accessToken: { type: String, required: true },
-  refreshToken: { type: Number, required: true },
+  refreshToken: { type: String, required: true },
   expires: { type: Date, required: true },
 });
 
