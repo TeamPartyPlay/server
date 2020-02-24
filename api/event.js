@@ -25,6 +25,7 @@ router.post('/:eventId', (req, res) => {
   res.send({ connection: 'success' });
 });
 
+// Get event information
 router.get('/:eventId', (req, res) => {
   const { eventId } = req.params;
   console.log(eventId);
