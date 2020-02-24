@@ -21,14 +21,14 @@ router.put('/', (req, res) => {
 });
 
 // Join Event
-router.post('/:eventId', (req, res) => {
+router.post('/:id', (req, res) => {
   res.send({ connection: 'success' });
 });
 
 // Get event information
-router.get('/:eventId', (req, res) => {
-  const { eventId } = req.params;
-  console.log(eventId);
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  console.log(id);
   res.send({ connection: 'success' });
 });
 
