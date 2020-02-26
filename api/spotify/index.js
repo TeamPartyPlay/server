@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 // const SpotifyModel = require('../models/Spotify');
-const UserModel = require('../models/User');
-const { clientId, clientSecret } = require('../config');
-const tokenAuth = require('./../middleware/tokenAuth');
+const UserModel = require('../../models/User');
+const { clientId, clientSecret } = require('../../config');
+const tokenAuth = require('../../middleware/tokenAuth');
 
 const router = express.Router();
 
