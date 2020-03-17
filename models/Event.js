@@ -12,7 +12,7 @@ EventSchema.add({
   location: { type: ObjectId, ref: 'Location', required: true },
   start: { type: Date, required: true },
   end: { type: Date },
-  public: { type: Boolean, required: true },
+  isPublic: { type: Boolean, required: true },
   invites: [{ type: ObjectId, ref: 'Invite', default: null }],
   attendees: [{ type: ObjectId, ref: 'User', default: null }],
   tags: [{ type: String, default: null }],
