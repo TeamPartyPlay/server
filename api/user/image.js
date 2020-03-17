@@ -1,7 +1,7 @@
 const express = require('express');
-const UserModel = require('./../../models/User');
-const ImageModel = require('./../../models/Image');
-const tokenAuth = require('./../../middleware/tokenAuth');
+const UserModel = require('../../models/User');
+const ImageModel = require('../../models/Image');
+const tokenAuth = require('../../middleware/tokenAuth');
 
 const router = express.Router();
 

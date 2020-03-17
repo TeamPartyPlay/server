@@ -6,7 +6,7 @@ const SpotifyModel = require('./Spotify');
 const TrackModel = require('./Track');
 const UserModel = require('./User');
 
-export {
+module.exports = {
   EventModel,
   ImageModel,
   InviteModel,

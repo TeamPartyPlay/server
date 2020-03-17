@@ -2,5 +2,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
-    "editor.detectIndentation": true
+    "editor.detectIndentation": true,
+    "cSpell.words": [
+        "mimetype"
+    ]
 }

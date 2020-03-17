@@ -1,6 +1,6 @@
 const express = require('express');
 const tokenAuth = require('../middleware/tokenAuth');
-const { EventModel } = require('../models');
+const { EventModel, LocationModel } = require('../models');
 
 const router = express.Router();
 
@@ -34,8 +34,25 @@ router.get('/:id', async (req, res) => {
 
 // Create new event
 router.post('/', async (req, res) => {
-  const {} = req.body;
-
+  const {
+    name, description, lat, lng, start, end, isPublic, invites, attendees, tags,
+  } = req.body;
+  // Check if Owner Exist
+  const owner = req.user._id;
+  const location = new LocationModel({ lat, lng });
+  const event = new EventModel({
+    name,
+    description,
+    owner,
+    location,
+    start,
+    end,
+    isPublic,
+    invites,
+    attendees,
+    tags,
+  });
+  event.save();
   res.send({ connection: 'success' });
 });
 
