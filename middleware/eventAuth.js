@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const EventModel = require('./../models/Event');
+const EventModel = require('../models/Event');
 
 const eventAuth = async (req, res, next) => {
   const { eventId } = req.body;

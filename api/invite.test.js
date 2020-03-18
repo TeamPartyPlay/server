@@ -1,3 +1,4 @@
+const app = require('../app');
 
 describe('Sample Test', () => {
   it('should test that true === true', async () => {

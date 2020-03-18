@@ -2,7 +2,8 @@
 const express = require('express');
 // const SpotifyModel = require('../models/Spotify');
 const UserModel = require('../models/User');
-const { clientId, clientSecret } = require('../config');
+
+const { clientId, clientSecret } = process.env;
 const tokenAuth = require('../middleware/tokenAuth');
 
 const router = express.Router();

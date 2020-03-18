@@ -53,14 +53,11 @@ router.post('/login', async (req, res) => {
 
   if (validate) {
     try {
-      const user = await UserModel.find({ username });
+      const user = await UserModel.findOne({ username });
       if (user) {
         if (await bcrypt.compare(password, user.password)) {
-          const token = jwt.sign(user, 'secret');
+          const token = jwt.sign(user.toJSON(), 'secret');
           const properties = { httpOnly: true };
-          if (req.body.remember) {
-            properties.maxAge = 10000000000000;
-          }
           res.cookie('token', token, properties);
           res.status(200).send({
             user,
@@ -73,6 +70,7 @@ router.post('/login', async (req, res) => {
         res.status(401).send({ error: 'Username or Password Incorrect' });
       }
     } catch (error) {
+      console.log(error);
       res.status(500).send({ error });
     }
   }

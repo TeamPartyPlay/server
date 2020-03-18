@@ -1,5 +1,13 @@
 const jwt = require('jsonwebtoken');
+const express = require('express');
 
+/**
+ * Used by some api endpoints to determine
+ * if there is a user associated with the request
+ * @param {express.Request} req Express Request
+ * @param {express.Response} res Express Response
+ * @param {express.NextFunction} next Express Next Function
+ */
 const tokenAuth = (req, res, next) => {
   req.user = null;
   if (req.cookies.token) {

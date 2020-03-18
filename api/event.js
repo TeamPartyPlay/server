@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
     tags,
   });
   event.save();
-  res.send({ connection: 'success' });
+  res.send({ event });
 });
 
 // User joins Event
