@@ -81,4 +81,18 @@ router.post('/logout', tokenAuth, (req, res) => {
   res.send({ logout: true });
 });
 
+router.delete('/', tokenAuth, async (req, res) => {
+  const { id } = req.body;
+  if (id === req.user._id) {
+    try {
+      await UserModel.findOneAndDelete({ _id: req.user._id });
+      res.send({ delete: true });
+    } catch (error) {
+      res.status(500).send({ error });
+    }
+  } else {
+    res.status(401).send({ error: 'User Not Authorized' });
+  }
+});
+
 module.exports = router;
