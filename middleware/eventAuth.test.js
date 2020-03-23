@@ -1,8 +1,8 @@
 const request = require('supertest');
 const app = require('../app');
 
-describe('Middleware Testing', () => {
-  test('should pass through Token Authorization', () => new Promise((done) => {
+describe('Event Middleware Testing', () => {
+  test('Should pass through Event Token Authorization', () => new Promise((done) => {
     request(app)
       .get('/api/user')
       .set('Cookie', ['token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6WyJnb3YuZWF0b25AZ21haWwuY29tIl0sInNwb3RpZnkiOm51bGwsImV2ZW50IjpudWxsLCJwYXN0RXZlbnRzIjpbXSwiZm9sbG93ZXJzIjpbXSwiZm9sbG93aW5nIjpbXSwicHJvZmlsZSI6bnVsbCwiX2lkIjoiNWU3Mjc3Y2Y0OGIwNzgyMmVjYzBmNTE0IiwidXNlcm5hbWUiOiJrZXZpbmVhdG9uNjAzIiwicGFzc3dvcmQiOiIkMmEkMTAkdzQ0NGY1bzFQM1FhRk5kckZ6OUYvT2NZV01ZclY2aGZCb29TR1dpdTAzV1dhMk9tSC9qVy4iLCJfX3YiOjAsImlhdCI6MTU4NDU2MTA2OX0.1i4faNerWFM29uODLK_HQP-thU4OSXC0vetiF6Y1oOs'])
@@ -13,7 +13,7 @@ describe('Middleware Testing', () => {
         done();
       });
   }));
-  test('should NOT pass through Token Authorization', async () => {
+  test('Should NOT pass through Token Authorization', async () => {
     const test = await request(app);
     const res = await test.get('/api/user');
     expect(res.text).toBe('{"error":"No User Token"}');

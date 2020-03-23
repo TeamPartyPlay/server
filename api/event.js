@@ -26,10 +26,12 @@ router.get('/', /** TODO: Middleware Needed */ (req, res) => {
 // Get event by id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-
-  const event = await EventModel.findById(id).exec();
-
-  res.send({ event });
+  try {
+    const event = await EventModel.findById(id).exec();
+    res.send({ event });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
 });
 
 // Create new event
