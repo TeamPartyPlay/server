@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.use('/spotify', require('./spotify'));
 router.use('/user', require('./user'));
+router.use('/event', require('./event'));
 router.use('/invite', require('./invite'));
 router.use('/spotify', require('./spotify'));
 router.use('/playlist', require('./playlist'));

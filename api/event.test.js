@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { UserModel } = require('../models');
@@ -13,6 +14,9 @@ beforeAll(async () => {
 });
 
 describe('Event Testing', () => {
+  let eventId = '';
+  let userId = '';
+
   it('Should Get the Current Event', () => new Promise((done) => {
     request(app)
       .get('/api/event')
@@ -43,7 +47,7 @@ describe('Event Testing', () => {
       });
   }));
 
-  it('Should NOT Get Event by ID', () => new Promise((done) => {
+  it('Should NOT Get Event by ID With User Authorization', () => new Promise((done) => {
     request(app)
       .get('/api/event/1')
       .end((err, res) => {
@@ -53,19 +57,87 @@ describe('Event Testing', () => {
       });
   }));
 
-  it('Should Post New Event', () => new Promise((done) => {
-    done();
+  it('Should Post New Event With User Authorization', () => new Promise((done) => {
+    request(app)
+      .post('/api/event')
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(200);
+        done();
+      });
+  }));
+
+  it('Should NOT Post New Event With User Authorization', () => new Promise((done) => {
+    request(app)
+      .post('/api/event')
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(200);
+        done();
+      });
+  }));
+
+  it('Should NOT Post New Event WITHOUT User Authorization', () => new Promise((done) => {
+    request(app)
+      .post('/api/event')
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(401);
+        done();
+      });
   }));
 
   it('Should have User Join Event', () => new Promise((done) => {
-    done();
+    request(app)
+      .post(`/api/event/join/${1}`)
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(401);
+        done();
+      });
   }));
 
   it('Should have User Exit Event', () => new Promise((done) => {
-    done();
+    request(app)
+      .post(`/api/event/exit/${1}`)
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(401);
+        done();
+      });
   }));
 
   it('Should delete Event', () => new Promise((done) => {
-    done();
+    request(app)
+      .delete(`/api/event/${1}`)
+      .set('Cookie', [])
+      .send({
+
+      })
+      .end((err, res) => {
+        expect(err).toBe(null);
+        expect(res.status).toBe(401);
+        done();
+      });
   }));
 });
