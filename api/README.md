@@ -25,7 +25,7 @@
 |POST  | `/api/playlist/vote`   | Vote on track           | Vote
 |PUT   | `/api/playlist`        | Update current playlist | Playlist
 |PUT   | `/api/playlist/:id`    | Update playlist by id   | Playlist
-|DELETE| `/api/playlist/:id`    | Delete a playlist
+|DELETE| `/api/playlist/:id`    | Delete a playlist |
 
 ## Invite
 

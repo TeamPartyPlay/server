@@ -1,20 +1,24 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app');
+const { UserModel } = require('../models');
 
 const { mongoUrl } = process.env;
+
+let user = null;
 
 beforeAll(async () => {
   await mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
+  user = UserModel.findOne({ name: 'user' });
 });
 
 describe('Event Middleware Testing', () => {
   test('Should pass through Event Token Authorization', () => new Promise((done) => {
     request(app)
-      .get('/api/user')
+      .get('/api/event')
       .set('Cookie', ['token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6WyJnb3YuZWF0b25AZ21haWwuY29tIl0sInNwb3RpZnkiOm51bGwsImV2ZW50IjpudWxsLCJwYXN0RXZlbnRzIjpbXSwiZm9sbG93ZXJzIjpbXSwiZm9sbG93aW5nIjpbXSwicHJvZmlsZSI6bnVsbCwiX2lkIjoiNWU3Mjc3Y2Y0OGIwNzgyMmVjYzBmNTE0IiwidXNlcm5hbWUiOiJrZXZpbmVhdG9uNjAzIiwicGFzc3dvcmQiOiIkMmEkMTAkdzQ0NGY1bzFQM1FhRk5kckZ6OUYvT2NZV01ZclY2aGZCb29TR1dpdTAzV1dhMk9tSC9qVy4iLCJfX3YiOjAsImlhdCI6MTU4NDU2MTA2OX0.1i4faNerWFM29uODLK_HQP-thU4OSXC0vetiF6Y1oOs'])
       .end((error, res) => {
         expect(error).toBe(null);
@@ -25,7 +29,7 @@ describe('Event Middleware Testing', () => {
   }));
   test('Should NOT pass through Token Authorization', async () => {
     const test = await request(app);
-    const res = await test.get('/api/user');
+    const res = await test.get('/api/event');
     expect(res.text).toBe('{"error":"No User Token"}');
     expect(res.statusCode).toBe(401);
   });
