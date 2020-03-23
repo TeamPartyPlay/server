@@ -99,11 +99,9 @@ router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const event = await EventModel.findById(id).exec();
   if (event.owner === user._id) {
-    res.send({ connection: 'success' });
-  } else {
-    res.status(401).send('User Not Authorized');
+    return res.send({ connection: 'success' });
   }
-  res.send({ connection: 'success' });
+  return res.status(401).send('User Not Authorized');
 });
 
 // Delete Event
@@ -112,11 +110,9 @@ router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const event = await EventModel.findById(id).exec();
   if (event.owner === user._id) {
-    res.send({ connection: 'success' });
-  } else {
-    res.status(401).send('User Not Authorized');
+    return res.send({ connection: 'success' });
   }
-  res.send({ connection: 'success' });
+  return res.status(401).send('User Not Authorized');
 });
 
 module.exports = router;

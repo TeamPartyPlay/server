@@ -7,8 +7,8 @@ const InviteSchema = BaseSchema();
 
 InviteSchema.add({
   user: { type: ObjectId, ref: 'User', required: true },
-  status: { type: Number, required: true },
-  sent: { type: Boolean, required: true },
+  status: { type: Number, required: true, default: 0 },
+  sent: { type: Boolean, required: true, default: false },
 });
 
 const InviteModel = model(

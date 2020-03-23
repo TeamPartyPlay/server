@@ -39,6 +39,20 @@ router.get('/event/:id', async (req, res) => {
   res.send({ invites });
 });
 
+router.post('/', async (req, res) => {
+  const { userId, eventId } = req.body;
+  try {
+    const event = await EventModel.findById(eventId);
+    const invite = new InviteModel({ user: userId });
+    event.invites = [...event.invites, invite];
+    event.save();
+    invite.save();
+    res.send({ invite });
+  } catch (error) {
+    res.status(500).send({ error });
+  }
+});
+
 // Accept Invite
 router.post('/accept', async (req, res) => {
   const { id } = req.body;

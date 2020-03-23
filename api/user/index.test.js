@@ -1,8 +1,25 @@
 const request = require('supertest');
+const mongoose = require('mongoose');
+const { UserModel } = require('../../models');
 const app = require('../../app');
+
+const { mongoUrl } = process.env;
+
+beforeAll(async () => {
+  await mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+});
+
+afterAll(async () => {
+  await UserModel.deleteOne({ name: 'kevineaton' });
+});
 
 
 describe('User Endpoint Testing', () => {
+  let createdUserId = '';
+  let createdUserToken = '';
   it('Get the Current User without Authorization', async () => {
     const test = await request(app);
     const res = await test.get('/api/user');
@@ -22,38 +39,51 @@ describe('User Endpoint Testing', () => {
       });
   }));
 
-  /* it('Should Create a New User', async (done) => {
+  it('Should Create a New User', () => new Promise((done) => {
+    request(app)
+      .post('/api/user')
+      .send({
+        username: 'kevineaton',
+        password: 'password123',
+        confirmPassword: 'password123',
+        email: 'kevin.eaton@mymail.champlain.edu',
+      })
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        createdUserId = res.body._id;
+        expect(res.statusCode).toBe(200);
+        done();
+      });
+  }));
+
+  it('Should NOT Create a New User', async () => {
     const test = await request(app);
     const res = await test
       .post('/api/user')
       .send({
-        name: 'kevineaton',
+        username: 'kevineaton',
         password: 'password123',
         confirmPassword: 'password123',
         email: 'kevin.eaton@mymail.champlain.edu',
       })
       .set('Accept', 'application/json');
-    // console.log(res);
-    expect(res.statusCode).toBe(200);
-    // user = res.body;
-    done();
+    expect(res.statusCode).toBe(400);
   });
 
   it('Should login user and create cookie', () => new Promise((done) => {
     request(app)
       .post('/api/user/login')
       .send({
-        name: 'user',
-        password: 'password',
+        username: 'kevineaton',
+        password: 'password123',
       })
-      .type('form')
       .set('Accept', 'application/json')
       .end((err, res) => {
-        console.log(res);
         expect(err).toBe(null);
         expect(res.statusCode).toBe(200);
-        expect(res.cookie).toHaveProperty('token');
-        userToken = res.cookie.token;
+        expect(res.header).toHaveProperty('set-cookie');
+        [createdUserToken] = res.header['set-cookie'];
+        [createdUserToken] = createdUserToken.split(';');
         done();
       });
   }));
@@ -61,14 +91,14 @@ describe('User Endpoint Testing', () => {
   it('Delete a current user by id', () => new Promise((done) => {
     request(app)
       .delete('/api/user')
-      .set({
-        username: 'user',
-        password: 'password',
+      .set('Cookie', [createdUserToken])
+      .send({
+        id: createdUserId,
       })
       .end((error, res) => {
         expect(error).toBe(null);
         expect(res.statusCode).toBe(200);
         done();
       });
-  })); */
+  }));
 });

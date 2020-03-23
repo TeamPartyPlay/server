@@ -18,21 +18,22 @@ router.post('/', async (req, res) => {
     const validate = ![username, password, confirmPassword, email].filter((e) => !e).length;
     const users = await UserModel.find({ username });
     if (users.length) {
-      res.status(400).send({ error: `Username ${username} already exists` });
-    } else if (password !== confirmPassword) {
-      res.status(400).send({ error: 'Passwords Do Not Match' });
-    } else if (validate) {
+      return res.status(400).send({ error: `Username ${username} already exists` });
+    }
+    if (password !== confirmPassword) {
+      return res.status(400).send({ error: 'Passwords Do Not Match' });
+    }
+    if (validate) {
       const hash = await bcrypt.hash(password, 10);
       const user = new UserModel({
         username, password: hash, email,
       });
       await user.save();
-      res.status(200).send(user);
-    } else {
-      throw Error;
+      return res.status(200).send(user);
     }
+    throw Error;
   } catch (error) {
-    res.status(500).send({ error });
+    return res.status(500).send({ error });
   }
 });
 
@@ -54,26 +55,26 @@ router.post('/login', async (req, res) => {
   if (validate) {
     try {
       const user = await UserModel.findOne({ username });
+
       if (user) {
         if (await bcrypt.compare(password, user.password)) {
           const token = jwt.sign(user.toJSON(), 'secret');
           const properties = { httpOnly: true };
           res.cookie('token', token, properties);
-          res.status(200).send({
+          return res.status(200).send({
             user,
             authenticated: true,
           });
-        } else {
-          res.status(401).send({ error: 'Username or Password Incorrect' });
         }
-      } else {
-        res.status(401).send({ error: 'Username or Password Incorrect' });
+        return res.status(401).send({ error: 'Username or Password Incorrect' });
       }
+      return res.status(401).send({ error: 'Username or Password Incorrect' });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ error });
+      return res.status(500).send({ error });
     }
   }
+  return res.status(500).send({ error: 'Not Valid' });
 });
 
 router.post('/logout', tokenAuth, (req, res) => {
@@ -86,12 +87,12 @@ router.delete('/', tokenAuth, async (req, res) => {
   if (id === req.user._id) {
     try {
       await UserModel.findOneAndDelete({ _id: req.user._id });
-      res.send({ delete: true });
+      return res.status(200).send({ delete: true });
     } catch (error) {
-      res.status(500).send({ error });
+      return res.status(500).send({ error });
     }
   } else {
-    res.status(401).send({ error: 'User Not Authorized' });
+    return res.status(401).send({ error: 'User Not Authorized' });
   }
 });
 
