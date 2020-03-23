@@ -3,7 +3,12 @@ const tokenAuth = require('../middleware/tokenAuth');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.use(tokenAuth);
+
+/**
+ * Get Playlist by Current Event
+ */
+router.get('/', /** TODO: Event Authorization */ (req, res) => {
   res.send({ connection: 'success' });
 });
 
@@ -12,7 +17,7 @@ router.get('/:eventId', (req, res) => {
   res.send({ connection: 'success' });
 });
 
-router.post('/vote', tokenAuth, (req, res) => {
+router.post('/vote', (req, res) => {
   const { event, playlist, song } = req.body;
   res.send({ connection: 'success' });
 });

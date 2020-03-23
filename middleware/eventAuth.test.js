@@ -1,5 +1,15 @@
 const request = require('supertest');
+const mongoose = require('mongoose');
 const app = require('../app');
+
+const { mongoUrl } = process.env;
+
+beforeAll(async () => {
+  await mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+});
 
 describe('Event Middleware Testing', () => {
   test('Should pass through Event Token Authorization', () => new Promise((done) => {
