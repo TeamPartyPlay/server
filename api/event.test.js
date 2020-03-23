@@ -18,6 +18,7 @@ describe('Event Testing', () => {
       .get('/api/event')
       .end((err, res) => {
         expect(err).toBe(null);
+        expect(res.status).toBe(401);
         done();
       });
   }));
@@ -27,6 +28,7 @@ describe('Event Testing', () => {
       .get('/api/event')
       .end((err, res) => {
         expect(err).toBe(null);
+        expect(res.status).toBe(401);
         done();
       });
   }));
@@ -36,6 +38,7 @@ describe('Event Testing', () => {
       .get('/api/event')
       .end((err, res) => {
         expect(err).toBe(null);
+        expect(res.status).toBe(200);
         done();
       });
   }));
