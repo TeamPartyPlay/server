@@ -11,14 +11,12 @@ beforeAll(async () => {
   });
 });
 
-describe('Sample Test', () => {
-  it('should test that true === true', async () => {
-    expect(true).toBe(true);
-  });
+afterAll(async () => {
+
 });
 
-describe('New Test', () => {
-  it('should test connection', () => {
+describe('Sample Test', () => {
+  it('should test that true === true', async () => {
     expect(true).toBe(true);
   });
 });
