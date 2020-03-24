@@ -5,6 +5,9 @@ const supertest = require('supertest');
  * Create a Dummy User for testing purposes
  * @param {supertest} request SuperTest Request
  * @param {Express.Application} app Express App
+ * @param {string} username Test Username
+ * @param {string} password Test Password
+ * @param {string} email Test Email
  */
 const createTestUser = async (request, app, username, password, email) => {
   const req = await request(app);
@@ -25,6 +28,8 @@ const createTestUser = async (request, app, username, password, email) => {
  * Logins a Dummy User for testing purposes
  * @param {supertest} request SuperTest Request
  * @param {Express.Application} app Express App
+ * @param {string} username Test Username
+ * @param {string} password Test Password
  */
 const loginTestUser = async (request, app, username, password) => {
   const req = await request(app);
