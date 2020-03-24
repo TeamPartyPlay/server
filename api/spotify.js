@@ -8,8 +8,10 @@ const tokenAuth = require('../middleware/tokenAuth');
 
 const router = express.Router();
 
+router.use(tokenAuth);
+
 // Get Spotify access, refresh, expiration
-router.get('/', tokenAuth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const user = await UserModel.findById(req.user._id).populate('spotify');
     const { spotify } = user;
