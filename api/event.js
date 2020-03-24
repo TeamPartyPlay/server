@@ -39,9 +39,9 @@ router.post('/', async (req, res) => {
   const {
     name, description, lat, lng, start, end, isPublic, invites, attendees, tags,
   } = req.body;
-  // Check if Owner Exist
   const owner = req.user._id;
   const location = new LocationModel({ lat, lng });
+  await location.save();
   const event = new EventModel({
     name,
     description,
@@ -54,26 +54,29 @@ router.post('/', async (req, res) => {
     attendees,
     tags,
   });
-  event.save();
-  res.send({ event });
+  await event.save();
+  res.send(event);
 });
 
 // User joins Event
 router.post('/join/:id', async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.body;
+  const { user } = req;
   const event = await EventModel.findById(id).exec();
-  console.log(event);
-  res.send({ connection: 'success' });
+  event.attendees = [...event.attendees, user._id];
+  await event.save();
+  res.send(event);
 });
 
 // Get Event by Id
 router.post('/exit/:id', async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.body;
+  const { user } = req;
   const event = await EventModel.findById(id).exec();
-  console.log(event);
-  res.send({ connection: 'success' });
+  const newAttendees = event.attendees.filter((i) => i !== user._id);
+  event.attendees = newAttendees;
+  await event.save();
+  res.send(event);
 });
 
 // Update Event

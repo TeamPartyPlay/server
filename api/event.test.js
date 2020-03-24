@@ -3,12 +3,28 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app');
 
-const { TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL } = process.env;
+const { EventModel } = require('../models');
 const { createTestUser, loginTestUser, deleteTestUser } = require('../utils/testing');
+
+const { TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL } = process.env;
+const {
+  TEST_EVENT_NAME,
+  TEST_EVENT_DESC,
+  TEST_EVENT_LAT,
+  TEST_EVENT_LONG,
+  TEST_EVENT_YEAR,
+  TEST_EVENT_MONTH,
+  TEST_EVENT_DATE,
+  TEST_EVENT_HOUR,
+  TEST_EVENT_MINUTES,
+  TEST_IS_PUBLIC,
+} = process.env;
+
 
 const { mongoUrl } = process.env;
 let user = null;
 let token = null;
+let event = null;
 
 beforeAll(async () => {
   await mongoose.connect(mongoUrl, {
@@ -21,6 +37,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await deleteTestUser(request, app, user._id, token);
+  await EventModel.deleteMany({ name: 'Kevin\'s Birthday' });
 });
 
 describe('Event Testing', () => {
@@ -67,19 +84,25 @@ describe('Event Testing', () => {
       });
   }));
 
-  it('Should Post New Event With User Authorization', () => new Promise((done) => {
-    request(app)
-      .post('/api/event')
-      .set('Cookie', [])
+  it('Should Post New Event With User Authorization', async () => {
+    const req = await request(app);
+    const res = await req.post('/api/event')
+      .set('Cookie', [token])
       .send({
-
-      })
-      .end((err, res) => {
-        expect(err).toBe(null);
-        expect(res.status).toBe(200);
-        done();
+        name: 'Kevin\'s Birthday',
+        description: '22 is just a number',
+        lat: 44.473487,
+        lng: -73.214005,
+        owner: user._id,
+        start: new Date(2021, 7, 12, 11, 30),
+        end: new Date(2021, 7, 12, 7, 30),
+        isPublic: true,
+        invites: [],
+        attendees: [user._id],
+        tags: ['birthday', 'fun'],
       });
-  }));
+    expect(res.status).toBe(200);
+  });
 
   it('Should NOT Post New Event With User Authorization', () => new Promise((done) => {
     request(app)

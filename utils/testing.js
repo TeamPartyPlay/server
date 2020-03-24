@@ -61,8 +61,68 @@ const deleteTestUser = async (request, app, id, token) => {
     .send({ id });
 };
 
+/**
+ * Creates a Dummy Event for Testing Purposes
+ * @param {supertest} request SuperTest Request
+ * @param {Express.Application} app Express App
+ * @param {string} token Tokenized Test User
+ * @param {string} name Test Event Name
+ * @param {string} description Test Event Name
+ * @param {string} owner ObjectId of Test User Object
+ * @param {number} lat Latitude of Location
+ * @param {number} lng Longitude of Location
+ * @param {Date} start Start Time
+ * @param {Boolean} isPublic If the event is public
+ * @param {Object} eventCreationOpts Other event options
+ */
+const createTestEvent = async (
+  request,
+  app,
+  token,
+  name,
+  description,
+  owner,
+  lat,
+  lng,
+  start,
+  isPublic,
+  eventCreationOpts,
+) => {
+  const req = await request(app);
+  const res = await req
+    .post('/api/event')
+    .set('Cookie', [token])
+    .send({
+      name,
+      description,
+      owner,
+      lat,
+      lng,
+      start,
+      isPublic,
+      ...eventCreationOpts,
+    });
+  return res.body;
+};
+
+/**
+ * Deletes a Dummy User for testing purposes
+ * @param {supertest} request SuperTest Request
+ * @param {Express.Application} app Express App
+ * @param {string} token Tokenized Test User
+ * @param {string} id ObjectId of Test Event
+ */
+const deleteTestEvent = async (request, app, token, id) => {
+  const req = await request(app);
+  const res = await req
+    .delete(`/api/event/${id}`)
+    .set('Cookie', [token]);
+};
+
 module.exports = {
   createTestUser,
   loginTestUser,
   deleteTestUser,
+  createTestEvent,
+  deleteTestEvent,
 };
