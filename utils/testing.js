@@ -106,6 +106,24 @@ const createTestEvent = async (
 };
 
 /**
+ * Allows Test User to Join Test Event
+ * @param {supertest} request SuperTest Request
+ * @param {Express.Application} app Express App
+ * @param {string} token Tokenized Test User
+ * @param {string} id ObjectId of Test Event
+ */
+const joinTestEvent = async (request, app, token, id) => {
+  const req = await request(app);
+  const res = await req
+    .post(`/api/event/join/${id}`)
+    .set('Cookie', [token]);
+  let [eventToken] = res.header['set-cookie'];
+  [eventToken] = eventToken.split(';');
+
+  return eventToken;
+};
+
+/**
  * Deletes a Dummy User for testing purposes
  * @param {supertest} request SuperTest Request
  * @param {Express.Application} app Express App
@@ -124,5 +142,6 @@ module.exports = {
   loginTestUser,
   deleteTestUser,
   createTestEvent,
+  joinTestEvent,
   deleteTestEvent,
 };

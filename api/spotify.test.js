@@ -23,7 +23,7 @@ afterAll(async () => {
 });
 
 describe('Spotify Endpoint Testing', () => {
-  it('Should get Spotify Application Secrets', async () => {
+  it('Should GET Spotify Application Secrets', async () => {
     const test = await request(app);
     const res = await test
       .get('/api/spotify/secret')
@@ -31,7 +31,24 @@ describe('Spotify Endpoint Testing', () => {
     expect(res.text).toBe(`{"clientId":"${clientId}","clientSecret":"${clientSecret}"}`);
     expect(res.status).toBe(200);
   });
-  it('Should get users spotify tokens/information', async () => {
-    expect(true).toBe(false);
+  it('Should GET users Spotify tokens/information', async () => {
+    const req = await request(app);
+    const res = await req
+      .post('api/spotify/tokens')
+      .set('Cookie', [token]);
+    expect(res.status).toBe(200);
+  });
+
+  it('Should POST users Spotify tokens/information', async () => {
+    const req = await request(app);
+    const res = await req
+      .post('api/spotify/tokens')
+      .set('Cookie', [token])
+      .send({
+        accessToken: '',
+        refreshToken: '',
+        expiration: Date.now(),
+      });
+    expect(res.status).toBe(200);
   });
 });

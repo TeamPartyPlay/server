@@ -1,12 +1,11 @@
 const { Schema } = require('mongoose');
 
 const BaseSchema = new Schema({
-  createdAt: { type: Date },
-  updatedAt: { type: Date },
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 BaseSchema.pre(/^update|save/, (next) => {
-  if (!this.createdAt) { this.createdAt = Date.now(); }
   this.updatedAt = Date.now();
   next();
 });

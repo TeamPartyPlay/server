@@ -4,7 +4,7 @@ const app = require('../app');
 
 const { TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL } = process.env;
 const {
-  createTestUser, loginTestUser, deleteTestUser, createTestEvent, deleteTestEvent,
+  createTestUser, loginTestUser, deleteTestUser, createTestEvent, joinTestEvent, deleteTestEvent,
 } = require('../utils/testing');
 
 const {
@@ -24,6 +24,7 @@ const { mongoUrl } = process.env;
 let user = null;
 let token = null;
 let event = null;
+let eventToken = null;
 
 beforeAll(async () => {
   await mongoose.connect(mongoUrl, {
@@ -44,6 +45,7 @@ beforeAll(async () => {
     new Date(TEST_EVENT_YEAR, TEST_EVENT_MONTH, TEST_EVENT_DATE, TEST_EVENT_HOUR, TEST_EVENT_MINUTES, 0, 0),
     TEST_IS_PUBLIC,
   );
+  eventToken = await joinTestEvent(request, app, token, event._id);
 });
 
 afterAll(async () => {
@@ -55,7 +57,7 @@ describe('Event Middleware Testing', () => {
   test('Should pass through Event Token Authorization', () => new Promise((done) => {
     request(app)
       .get('/api/event')
-      .set('Cookie', [token])
+      .set('Cookie', [token, eventToken])
       .end((error, res) => {
         expect(error).toBe(null);
         expect(res.statusCode).toBe(200);

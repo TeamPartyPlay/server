@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const app = require('../app');
 
 const { EventModel } = require('../models');
-const { createTestUser, loginTestUser, deleteTestUser } = require('../utils/testing');
+const {
+  createTestUser, loginTestUser, deleteTestUser, createTestEvent, joinTestEvent, deleteTestEvent,
+} = require('../utils/testing');
 
 const { TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL } = process.env;
 const {
@@ -25,6 +27,7 @@ const { mongoUrl } = process.env;
 let user = null;
 let token = null;
 let event = null;
+let eventToken = null;
 
 beforeAll(async () => {
   await mongoose.connect(mongoUrl, {
@@ -33,23 +36,38 @@ beforeAll(async () => {
   });
   user = await createTestUser(request, app, TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL);
   token = await loginTestUser(request, app, TEST_USERNAME, TEST_PASSWORD);
+  event = await createTestEvent(
+    request,
+    app,
+    token,
+    TEST_EVENT_NAME,
+    TEST_EVENT_DESC,
+    user,
+    TEST_EVENT_LAT,
+    TEST_EVENT_LONG,
+    new Date(TEST_EVENT_YEAR, TEST_EVENT_MONTH, TEST_EVENT_DATE, TEST_EVENT_HOUR, TEST_EVENT_MINUTES, 0, 0),
+    TEST_IS_PUBLIC,
+  );
+  eventToken = await joinTestEvent(request, app, token, event._id);
 });
 
 afterAll(async () => {
+  await deleteTestEvent(request, app, token, event._id);
   await deleteTestUser(request, app, user._id, token);
   await EventModel.deleteMany({ name: 'Kevin\'s Birthday' });
 });
 
 describe('Event Testing', () => {
-  let eventId = '';
-  let userId = '';
-
+  let testCreatedEvent = null;
+  let testCreatedEventToken = null;
   it('Should Get the Current Event', () => new Promise((done) => {
     request(app)
       .get('/api/event')
+      .set('Cookie', [token, eventToken])
       .end((err, res) => {
         expect(err).toBe(null);
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('name', TEST_EVENT_NAME);
         done();
       });
   }));
@@ -66,10 +84,12 @@ describe('Event Testing', () => {
 
   it('Should Get Event by ID', () => new Promise((done) => {
     request(app)
-      .get('/api/event')
+      .get(`/api/event/${event._id}`)
+      .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
         expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('name', TEST_EVENT_NAME);
         done();
       });
   }));
@@ -77,6 +97,7 @@ describe('Event Testing', () => {
   it('Should NOT Get Event by ID With User Authorization', () => new Promise((done) => {
     request(app)
       .get('/api/event/1')
+      .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
         expect(res.status).toBe(500);
@@ -101,19 +122,18 @@ describe('Event Testing', () => {
         attendees: [user._id],
         tags: ['birthday', 'fun'],
       });
+    testCreatedEvent = res.body;
     expect(res.status).toBe(200);
   });
 
   it('Should NOT Post New Event With User Authorization', () => new Promise((done) => {
     request(app)
       .post('/api/event')
-      .set('Cookie', [])
-      .send({
-
-      })
+      .set('Cookie', [token])
+      .send({})
       .end((err, res) => {
         expect(err).toBe(null);
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(500);
         done();
       });
   }));
@@ -122,9 +142,7 @@ describe('Event Testing', () => {
     request(app)
       .post('/api/event')
       .set('Cookie', [])
-      .send({
-
-      })
+      .send({})
       .end((err, res) => {
         expect(err).toBe(null);
         expect(res.status).toBe(401);
@@ -134,42 +152,37 @@ describe('Event Testing', () => {
 
   it('Should have User Join Event', () => new Promise((done) => {
     request(app)
-      .post(`/api/event/join/${1}`)
-      .set('Cookie', [])
-      .send({
-
-      })
+      .post(`/api/event/join/${event._id}`)
+      .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
-        expect(res.status).toBe(401);
+        [testCreatedEventToken] = res.header['set-cookie'];
+        [testCreatedEventToken] = testCreatedEventToken.split(';');
+        expect(res.status).toBe(200);
         done();
       });
   }));
 
   it('Should have User Exit Event', () => new Promise((done) => {
     request(app)
-      .post(`/api/event/exit/${1}`)
-      .set('Cookie', [])
-      .send({
-
-      })
+      .post(`/api/event/exit/${event._id}`)
+      .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(200);
         done();
       });
   }));
 
   it('Should delete Event', () => new Promise((done) => {
     request(app)
-      .delete(`/api/event/${1}`)
-      .set('Cookie', [])
-      .send({
-
-      })
+      .delete(`/api/event/${testCreatedEvent._id}`)
+      .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
-        expect(res.status).toBe(401);
+        console.log(res.text);
+        expect(res.status).toBe(200);
+
         done();
       });
   }));

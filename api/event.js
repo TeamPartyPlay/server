@@ -1,5 +1,7 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const tokenAuth = require('../middleware/tokenAuth');
+const eventAuth = require('../middleware/eventAuth');
 const { EventModel, LocationModel } = require('../models');
 
 const router = express.Router();
@@ -18,9 +20,9 @@ const router = express.Router();
 router.use(tokenAuth);
 
 // Get current event by id
-router.get('/', /** TODO: Middleware Needed */ (req, res) => {
+router.get('/', eventAuth, (req, res) => {
   const { event } = req;
-  res.send({ event });
+  res.send(event);
 });
 
 // Get event by id
@@ -28,7 +30,7 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const event = await EventModel.findById(id).exec();
-    res.send({ event });
+    return res.send(event);
   } catch (error) {
     return res.status(500).send({ error });
   }
@@ -39,48 +41,66 @@ router.post('/', async (req, res) => {
   const {
     name, description, lat, lng, start, end, isPublic, invites, attendees, tags,
   } = req.body;
-  const owner = req.user._id;
-  const location = new LocationModel({ lat, lng });
-  await location.save();
-  const event = new EventModel({
-    name,
-    description,
-    owner,
-    location,
-    start,
-    end,
-    isPublic,
-    invites,
-    attendees,
-    tags,
-  });
-  await event.save();
-  res.send(event);
+  try {
+    const owner = req.user._id;
+    const location = new LocationModel({ lat, lng });
+    await location.save();
+    const event = new EventModel({
+      name,
+      description,
+      owner,
+      location,
+      start,
+      end,
+      isPublic,
+      invites,
+      attendees,
+      tags,
+    });
+    await event.save();
+    return res.send(event);
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
 });
 
 // User joins Event
 router.post('/join/:id', async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-  const event = await EventModel.findById(id).exec();
-  event.attendees = [...event.attendees, user._id];
-  await event.save();
-  res.send(event);
+  try {
+    const event = await EventModel.findById(id).exec();
+    event.attendees = [...event.attendees, user._id];
+    await event.save();
+    const token = jwt.sign({ eventId: event._id }, 'secret');
+    const properties = { httpOnly: true };
+    res.cookie('eventToken', token, properties);
+    return res.send(event);
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
 });
 
 // Get Event by Id
 router.post('/exit/:id', async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-  const event = await EventModel.findById(id).exec();
-  const newAttendees = event.attendees.filter((i) => i !== user._id);
-  event.attendees = newAttendees;
-  await event.save();
-  res.send(event);
+  try {
+    const event = await EventModel.findById(id).exec();
+    const newAttendees = event.attendees.filter((i) => i !== user._id);
+    event.attendees = newAttendees;
+    await event.save();
+
+    res.clearCookie('eventToken');
+
+    return res.send(event);
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
 });
 
 // Update Event
-router.put('/', /** TODO: Middleware Needed */ async (req, res) => {
+router.put('/', eventAuth, async (req, res) => {
   const {
     name, description, owner, location, start, end, isPublic, invites, attendees, tags,
   } = req.body;
@@ -110,12 +130,13 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete Event
-router.put('/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { user } = req;
   const { id } = req.params;
   const event = await EventModel.findById(id).exec();
-  if (event.owner === user._id) {
-    return res.send({ connection: 'success' });
+  if (String(event.owner) === user._id) {
+    await event.remove();
+    return res.send({ delete: true });
   }
   return res.status(401).send('User Not Authorized');
 });

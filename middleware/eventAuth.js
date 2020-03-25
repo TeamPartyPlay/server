@@ -13,7 +13,7 @@ const eventAuth = async (req, res, next) => {
   const { eventToken } = req.cookies;
   if (eventToken) {
     try {
-      const eventId = await jwt.verify(eventToken, 'secret');
+      const { eventId } = await jwt.verify(eventToken, 'secret');
       const event = await EventModel.findById(eventId);
       req.event = event;
       next();
