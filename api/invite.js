@@ -7,13 +7,12 @@ const router = express.Router();
 
 router.use(tokenAuth);
 
-/**
- * Invite Status
- * 0: Not Seen
- * 1: Seen
- * 2: Accept
- * 3. Decline
- */
+const inviteStatus = {
+  NOT_SEEN: 0,
+  SEEN: 1,
+  ACCEPT: 2,
+  DECLINE: 3,
+};
 
 // Get Current Status of the Invite
 router.get('/', (req, res) => {
@@ -45,8 +44,8 @@ router.post('/', async (req, res) => {
     const event = await EventModel.findById(eventId);
     const invite = new InviteModel({ user: userId });
     event.invites = [...event.invites, invite];
-    event.save();
-    invite.save();
+    await event.save();
+    await invite.save();
     res.send({ invite });
   } catch (error) {
     res.status(500).send({ error });
@@ -57,30 +56,34 @@ router.post('/', async (req, res) => {
  * Handles Invite Status Updates
  * @param {number} status Invite Status
  */
-const inviteClosure = (status) => {
+const inviteHandler = (status) => {
   /**
    * Handles Invite Status Updates
    * @param {Express.Request} req Express Request
    * @param {Express.Response} res Express Response
    */
-  const inviteHandler = async (req, res) => {
+  const inviteClosure = async (req, res) => {
     const { id } = req.body;
-    const invite = await InviteModel.findById(id);
-    invite.status = status;
-    await invite.save();
-    res.send({ invite });
+    try {
+      const invite = await InviteModel.findById(id);
+      invite.status = status;
+      await invite.save();
+      return res.send({ invite });
+    } catch (error) {
+      return res.status(500).send({ error });
+    }
   };
-  return inviteHandler;
+  return inviteClosure;
 };
 
 // Accept Invite
-router.post('/accept', inviteClosure(2));
+router.post('/accept', inviteHandler(inviteStatus.ACCEPT));
 
 // Decline Invite
-router.post('/decline', inviteClosure(3));
+router.post('/decline', inviteHandler(inviteStatus.DECLINE));
 
 // User has seen invite but has not interacted with it
-router.post('/seen', inviteClosure(1));
+router.post('/seen', inviteHandler(inviteStatus.SEEN));
 
 router.delete('/:id', async (req, res) => {
   await InviteModel.findByIdAndDelete(req.params.id);

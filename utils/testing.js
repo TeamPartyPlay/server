@@ -137,6 +137,18 @@ const deleteTestEvent = async (request, app, token, id) => {
     .set('Cookie', [token]);
 };
 
+/**
+ * Create Dummy Playlist for testing purposes
+ * @param {supertest} request SuperTest Request
+ * @param {Express.Application} app Express App
+ * @param {string} token Tokenized Test User
+ * @param {string} eventToken ObjectId of Test Event
+ */
+const createPlaylist = async (request, app, token, eventToken) => {
+  const req = await request(app);
+  const res = await req;
+};
+
 module.exports = {
   createTestUser,
   loginTestUser,
