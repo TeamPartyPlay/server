@@ -1,5 +1,6 @@
 const express = require('express');
 const tokenAuth = require('../middleware/tokenAuth');
+const eventAuth = require('../middleware/eventAuth');
 
 const router = express.Router();
 
@@ -27,14 +28,14 @@ router.use(tokenAuth);
 const getCurrentPlaylist = (req, res) => res.send({ ...req.event.playlist });
 
 // eslint-disable-next-line arrow-body-style
-router.get('/', /** TODO: Event Authorization */ getCurrentPlaylist);
+router.get('/', eventAuth, getCurrentPlaylist);
 
 router.get('/:eventId', (req, res) => {
   const { eventId } = req.params;
   return res.send({ connection: 'success' });
 });
 
-router.post('/vote', /** TODO: Event Authorization */ (req, res) => {
+router.post('/vote', eventAuth, (req, res) => {
   const { event, song } = req.body;
   const { playlist } = req.event;
   return res.send({ connection: 'success' });

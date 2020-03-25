@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./server",
     "dev": "nodemon ./server",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "link-module-alias"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -24,6 +25,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.1.0",
+    "link-module-alias": "^1.2.0",
     "nodemon": "^2.0.2",
     "supertest": "^4.0.2"
   },
@@ -33,5 +35,11 @@
       "/node_modules/",
       "/docs/"
     ]
+  },
+  "_moduleAliases": {
+    "models": "models",
+    "utils": "utils",
+    "middleware": "middleware"
   }
+
 }
