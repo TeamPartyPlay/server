@@ -53,33 +53,34 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * Handles Invite Status Updates
+ * @param {number} status Invite Status
+ */
+const inviteClosure = (status) => {
+  /**
+   * Handles Invite Status Updates
+   * @param {Express.Request} req Express Request
+   * @param {Express.Response} res Express Response
+   */
+  const inviteHandler = async (req, res) => {
+    const { id } = req.body;
+    const invite = await InviteModel.findById(id);
+    invite.status = status;
+    await invite.save();
+    res.send({ invite });
+  };
+  return inviteHandler;
+};
+
 // Accept Invite
-router.post('/accept', async (req, res) => {
-  const { id } = req.body;
-  const invite = await InviteModel.findById(id);
-  invite.status = 2;
-  await invite.save();
-  res.send({ invite });
-});
+router.post('/accept', inviteClosure(2));
 
 // Decline Invite
-router.post('/decline', async (req, res) => {
-  const { id } = req.body;
-  const invite = await InviteModel.findById(id);
-  invite.status = 3;
-  await invite.save();
-  res.send({ invite });
-});
+router.post('/decline', inviteClosure(3));
 
 // User has seen invite but has not interacted with it
-router.post('/seen', async (req, res) => {
-  const { id } = req.body;
-  const invite = await InviteModel.findById(id);
-  invite.status = 1;
-  await invite.save();
-  res.send({ invite });
-});
-
+router.post('/seen', inviteClosure(1));
 
 router.delete('/:id', async (req, res) => {
   await InviteModel.findByIdAndDelete(req.params.id);
