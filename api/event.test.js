@@ -180,9 +180,7 @@ describe('Event Testing', () => {
       .set('Cookie', [token])
       .end((err, res) => {
         expect(err).toBe(null);
-        console.log(res.text);
         expect(res.status).toBe(200);
-
         done();
       });
   }));

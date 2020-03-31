@@ -55,6 +55,8 @@ afterAll(async () => {
 });
 
 describe('Vote Room Playlist Testing', () => {
+  let playlistId = null;
+
   it('Should GET Current Playlist', async () => {
     const req = await request(app);
     const res = await req
@@ -64,21 +66,29 @@ describe('Vote Room Playlist Testing', () => {
     expect(res.status).toBe(200);
   });
 
-  it('Should GET Playlist by ID', async () => {
-    const req = await request(app);
-    const res = await req
-      .get(`/api/playlist/${1}`)
-      .set('Cookie', [token]);
-    expect(res.status).toBe(200);
-  });
-
   it('Should POST a New Playlist for current Event', async () => {
     const req = await request(app);
     const res = await req
       .post('/api/playlist/')
-      .set('Cookie', [token, eventToken]);
+      .set('Cookie', [token, eventToken])
+      .send({
+        spotifyId: 'SPOTIFY_PLAYLIST_ID',
+        tracks: [
+          { uri: 'TRACK_URI' },
+        ],
+      });
+    playlistId = res.body._id;
     expect(res.status).toBe(200);
   });
+
+  it('Should GET Playlist by ID', async () => {
+    const req = await request(app);
+    const res = await req
+      .get(`/api/playlist/${playlistId}`)
+      .set('Cookie', [token]);
+    expect(res.status).toBe(200);
+  });
+
 
   it('Should POST a New PLaylist by ID', async () => {
     const req = await request(app);
@@ -94,8 +104,9 @@ describe('Vote Room Playlist Testing', () => {
       .put('/api/playlist')
       .set('Cookie', [token, eventToken])
       .send({
-        // TrackId
+        spotifyId: 'SPOTIFY_PLAYLIST_ID',
       });
+    expect(res.status).toBe(200);
   });
 
   it('Should NOT POST a repeated song', async () => {
@@ -106,6 +117,7 @@ describe('Vote Room Playlist Testing', () => {
       .send({
         // TrackId
       });
+    expect(res.status).toBe(200);
   });
 
   it('Should POST a Vote', async () => {
@@ -118,7 +130,7 @@ describe('Vote Room Playlist Testing', () => {
       });
     expect(res.status).toBe(200);
   });
-
+  /*
   it('Should DELETE Playlist for Current Event', async () => {
     const req = await request(app);
     const res = await req
@@ -126,11 +138,11 @@ describe('Vote Room Playlist Testing', () => {
       .set('Cookie', [token, eventToken]);
     expect(res.status).toBe(200);
   });
-
+*/
   it('Should DELETE Playlist by Id', async () => {
     const req = await request(app);
     const res = await req
-      .delete(`/api/playlist/${1}`)
+      .delete(`/api/playlist/${playlistId}`)
       .set('Cookie', [token]);
     expect(res.status).toBe(200);
   });

@@ -14,7 +14,10 @@ const eventAuth = async (req, res, next) => {
   if (eventToken) {
     try {
       const { eventId } = await jwt.verify(eventToken, 'secret');
-      const event = await EventModel.findById(eventId);
+      const event = await EventModel
+        .findById(eventId)
+        .populate('playlist')
+        .exec();
       req.event = event;
       next();
     } catch (error) {

@@ -7,7 +7,7 @@ const PlaylistSchema = BaseSchema();
 
 PlaylistSchema.add({
   spotifyId: { type: String, required: true },
-  tracks: [{ type: ObjectId, ref: 'Track' }],
+  tracks: [{ type: ObjectId, ref: 'Track', default: [] }],
 });
 
 const PlaylistModel = model(

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const PlaylistModel = require('models/Playlist');
 const BaseSchema = require('./BaseSchema');
 
 const { ObjectId } = Schema;
@@ -16,6 +17,11 @@ EventSchema.add({
   invites: [{ type: ObjectId, ref: 'Invite', default: null }],
   attendees: [{ type: ObjectId, ref: 'User', default: null }],
   tags: [{ type: String, default: null }],
+  playlist: { type: ObjectId, ref: 'Playlist', default: null },
+});
+
+EventSchema.post(/^delete|remove/, (doc) => {
+  PlaylistModel.findByIdAndDelete(doc.playlist);
 });
 
 const EventModel = model(

@@ -7,7 +7,7 @@ const TrackSchema = BaseSchema();
 
 TrackSchema.add({
   uri: { type: String, required: true },
-  votes: [{ type: ObjectId, ref: 'User' }],
+  votes: [{ type: ObjectId, ref: 'User', default: [] }],
 });
 
 const TrackModel = model(

@@ -34,7 +34,7 @@ describe('Spotify Endpoint Testing', () => {
   it('Should GET users Spotify tokens/information', async () => {
     const req = await request(app);
     const res = await req
-      .post('api/spotify/tokens')
+      .post('/api/spotify')
       .set('Cookie', [token]);
     expect(res.status).toBe(200);
   });
@@ -42,12 +42,12 @@ describe('Spotify Endpoint Testing', () => {
   it('Should POST users Spotify tokens/information', async () => {
     const req = await request(app);
     const res = await req
-      .post('api/spotify/tokens')
+      .post('/api/spotify')
       .set('Cookie', [token])
       .send({
-        accessToken: '',
-        refreshToken: '',
-        expiration: Date.now(),
+        accessToken: 'THEIR_ACCESS_TOKEN',
+        refreshToken: 'THEIR_REFRESH_TOKEN',
+        expires: Date.now(),
       });
     expect(res.status).toBe(200);
   });
