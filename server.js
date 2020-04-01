@@ -1,6 +1,7 @@
 const http = require('http');
 const mongoose = require('mongoose');
 const app = require('./app');
+const io = require('./socket');
 
 const { mongoUrl } = process.env;
 
@@ -24,5 +25,7 @@ const server = http
   .listen(process.env.PORT || 3000, () => {
     console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
   });
+
+io.attach(server);
 
 module.exports = server;

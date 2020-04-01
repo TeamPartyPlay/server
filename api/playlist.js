@@ -83,7 +83,6 @@ router.post('/vote', eventAuth, async (req, res) => {
   const { id } = req.body;
   if (playlist) {
     const track = await TrackModel.findById(id);
-    console.log(track);
     track.votes = [...track.votes, user._id];
     await track.save();
     return res.send(track);

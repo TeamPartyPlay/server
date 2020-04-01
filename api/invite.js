@@ -87,7 +87,7 @@ router.post('/seen', inviteHandler(inviteStatus.SEEN));
 
 router.delete('/:id', async (req, res) => {
   await InviteModel.findByIdAndDelete(req.params.id);
-  res.send({ response: 'success' });
+  res.send({ delete: true });
 });
 
 module.exports = router;

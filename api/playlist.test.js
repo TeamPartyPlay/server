@@ -125,7 +125,6 @@ describe('Vote Room Playlist Testing', () => {
       .send({
         id: track,
       });
-    console.log(res.body);
     expect(res.status).toBe(200);
   });
   it('Should DELETE Playlist by Id', async () => {
