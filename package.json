@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./server",
     "dev": "nodemon ./server",
-    "test": "jest",
+    "test": "jest --runInBand --detectOpenHandles",
     "postinstall": "link-module-alias"
   },
   "dependencies": {

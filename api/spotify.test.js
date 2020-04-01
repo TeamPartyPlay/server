@@ -20,6 +20,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await deleteTestUser(request, app, user._id, token);
+  await mongoose.connection.close();
 });
 
 describe('Spotify Endpoint Testing', () => {

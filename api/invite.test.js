@@ -11,6 +11,10 @@ beforeAll(async () => {
   });
 });
 
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
 describe('Sample Test', () => {
   it('should test that true === true', async () => {
     expect(true).toBe(true);

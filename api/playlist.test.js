@@ -52,10 +52,13 @@ beforeAll(async () => {
 afterAll(async () => {
   await deleteTestEvent(request, app, token, event._id);
   await deleteTestUser(request, app, user._id, token);
+  await mongoose.connection.close();
 });
 
 describe('Vote Room Playlist Testing', () => {
   let playlistId = null;
+  let playlist = null;
+  let track = null;
 
   it('Should GET Current Playlist', async () => {
     const req = await request(app);
@@ -89,56 +92,42 @@ describe('Vote Room Playlist Testing', () => {
     expect(res.status).toBe(200);
   });
 
-
-  it('Should POST a New PLaylist by ID', async () => {
-    const req = await request(app);
-    const res = await req
-      .post(`/api/playlist/${1}`)
-      .set('Cookie', [token]);
-    expect(res.status).toBe(200);
-  });
-
   it('Should POST a song to the playlist', async () => {
     const req = await request(app);
     const res = await req
-      .put('/api/playlist')
+      .post('/api/playlist/add')
       .set('Cookie', [token, eventToken])
       .send({
-        spotifyId: 'SPOTIFY_PLAYLIST_ID',
+        uri: 'SPOTIFY_TRACK_URI',
       });
+    playlist = res.body;
+    track = playlist.tracks[0]._id;
     expect(res.status).toBe(200);
   });
 
   it('Should NOT POST a repeated song', async () => {
     const req = await request(app);
     const res = await req
-      .put('/api/playlist')
+      .post('/api/playlist/add')
       .set('Cookie', [token, eventToken])
       .send({
-        // TrackId
+        uri: 'SPOTIFY_TRACK_URI',
       });
-    expect(res.status).toBe(200);
+
+    expect(res.status).toBe(500);
   });
 
   it('Should POST a Vote', async () => {
     const req = await request(app);
     const res = await req
       .post('/api/playlist/vote')
-      .set('Cookie', [token])
+      .set('Cookie', [token, eventToken])
       .send({
-        // TrackId
+        id: track,
       });
+    console.log(res.body);
     expect(res.status).toBe(200);
   });
-  /*
-  it('Should DELETE Playlist for Current Event', async () => {
-    const req = await request(app);
-    const res = await req
-      .delete('/api/playlist')
-      .set('Cookie', [token, eventToken]);
-    expect(res.status).toBe(200);
-  });
-*/
   it('Should DELETE Playlist by Id', async () => {
     const req = await request(app);
     const res = await req

@@ -55,6 +55,7 @@ afterAll(async () => {
   await deleteTestEvent(request, app, token, event._id);
   await deleteTestUser(request, app, user._id, token);
   await EventModel.deleteMany({ name: 'Kevin\'s Birthday' });
+  await mongoose.connection.close();
 });
 
 describe('Event Testing', () => {

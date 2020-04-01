@@ -149,6 +149,13 @@ const createPlaylist = async (request, app, token, eventToken) => {
   const res = await req;
 };
 
+const deletePlaylist = async (request, app, token, id) => {
+  const req = await request(app);
+  const res = await req
+    .delete(`/api/playlist/${id}`)
+    .set('Cookie', [token]);
+};
+
 module.exports = {
   createTestUser,
   loginTestUser,
@@ -156,4 +163,6 @@ module.exports = {
   createTestEvent,
   joinTestEvent,
   deleteTestEvent,
+  createPlaylist,
+  deletePlaylist,
 };

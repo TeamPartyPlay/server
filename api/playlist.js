@@ -2,7 +2,6 @@ const express = require('express');
 const tokenAuth = require('middleware/tokenAuth');
 const eventAuth = require('middleware/eventAuth');
 const PlaylistModel = require('models/Playlist');
-const EventModel = require('models/Event');
 const TrackModel = require('models/Track');
 
 const router = express.Router();
@@ -34,7 +33,7 @@ router.get('/', eventAuth, getCurrentPlaylist);
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const event = await EventModel.findById(id);
+    const event = await PlaylistModel.findById(id);
     return res.send(event.playlist);
   } catch (error) {
     return res.status(500).send({ error });
@@ -84,6 +83,7 @@ router.post('/vote', eventAuth, async (req, res) => {
   const { id } = req.body;
   if (playlist) {
     const track = await TrackModel.findById(id);
+    console.log(track);
     track.votes = [...track.votes, user._id];
     await track.save();
     return res.send(track);
@@ -94,18 +94,27 @@ router.post('/vote', eventAuth, async (req, res) => {
 router.post('/add', eventAuth, async (req, res) => {
   const { event } = req;
   const { playlist } = event;
-  const { track } = req.body;
+  const { uri } = req.body;
   try {
     if (playlist) {
-      const t = new TrackModel({ uri: track.uri });
+      const p = await PlaylistModel.findById(playlist._id).populate('tracks').exec();
+      /* console.log(p.tracks);
+      p.tracks.filter((track) => {
+        console.log({ track });
+        console.log({ uri });
+        return track.uri === uri;
+      });
+      console.log((p.tracks.filter((track) => track.uri === uri)).length); */
+      if ((p.tracks.filter((track) => track.uri === uri)).length) throw new Error('Song is already on the playlist');
+      const t = new TrackModel({ uri, votes: [req.user._id] });
       await t.save();
-      playlist.tracks = [...playlist.tracks, t];
-      await playlist.save();
-      return res.send(event.playlist);
+      p.tracks = [...p.tracks, t];
+      await p.save();
+      return res.send(p);
     }
     throw new Error('Event does not contain playlist');
   } catch (error) {
-    return res.send(500).send({ error });
+    return res.status(500).send({ error });
   }
 });
 
