@@ -4,6 +4,20 @@ This is the back end server for PartyPlay.
 
 ## Setup
 
+0. Clone the Repo
+1. run `npm i` in the project directory to download dependencies
+2. run `npm start` in the project directory to run application
+
+## Socket Events
+
+| Event Name | Data Received | Direction | Back-End Behavior | Front-End Behavior |
+|-|-|-|-|-|
+| `updatedPlaylist` | null | Server -> Client | Emits Event | Queries Playlist API for updated information |
+
+## [API](docs/api.md)
+
+Go to API documentation [here](docs/api.md)
+
 ## Helpful Resources
 
 [Testing NodeJs/Express API with Jest and Supertest](https://dev.to/nedsoft/testing-nodejs-express-api-with-jest-and-supertest-1km6)

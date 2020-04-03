@@ -70,25 +70,14 @@ afterEach((done) => {
 });
 
 
-describe('basic socket.io example', () => {
-  test('should communicate', () => new Promise((done) => {
-    ioServer.emit('echo', 'Hello World');
-    socket.once('echo', (message) => {
+describe('socket.io testing', () => {
+  test('should communicate when playlist is updated', () => new Promise((done) => {
+    const f = jest.fn();
+    ioServer.emit('updatedPlaylist');
+    socket.once('updatedPlaylist', () => {
+      f();
       // Check that the message matches
-      expect(message).toBe('Hello World');
-      done();
-    });
-    ioServer.on('connection', (mySocket) => {
-      console.log(mySocket);
-      expect(mySocket).toBeDefined();
-      // once connected, emit Hello World
-    });
-  }));
-  test('should communicated', () => new Promise((done) => {
-    ioServer.emit('echo', 'Hello World');
-    socket.once('echo', (message) => {
-      // Check that the message matches
-      expect(message).toBe('Hello World');
+      expect(f).toHaveBeenCalled();
       done();
     });
     ioServer.on('connection', (mySocket) => {

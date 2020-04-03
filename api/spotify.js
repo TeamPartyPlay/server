@@ -39,6 +39,8 @@ router.post('/', async (req, res) => {
     const { accessToken, refreshToken, expires } = req.body;
     const { user } = req;
 
+    const u = await UserModel.findById(user._id);
+
     const spotify = new SpotifyModel({
       accessToken,
       refreshToken,
@@ -47,9 +49,11 @@ router.post('/', async (req, res) => {
 
     await spotify.save();
 
-    user.spotify = spotify;
+    u.spotify = spotify;
 
-    return res.send({ user });
+    await u.save();
+
+    return res.send({ user: u });
   } catch (error) {
     return res.status(500).send({ error });
   }

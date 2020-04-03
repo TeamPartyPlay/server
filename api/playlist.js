@@ -117,6 +117,10 @@ router.post('/add', eventAuth, async (req, res) => {
   }
 });
 
+// Allows an owner to remove a song from the playlist.
+// Use Cases:
+//   - owner of event does want that song played at the event
+//   - owner removes song from playlist after moving next song to playlist
 router.post('/remove', eventAuth, async (req, res) => {
   const { event, user } = req;
   const { playlist } = event;
