@@ -16,6 +16,7 @@
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "jsonwebtoken": "^8.5.1",
+    "link-module-alias": "^1.2.0",
     "mongoose": "^5.8.11",
     "morgan": "~1.9.1",
     "socket.io": "^2.3.0"
@@ -27,7 +28,6 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.1.0",
-    "link-module-alias": "^1.2.0",
     "nodemon": "^2.0.2",
     "supertest": "^4.0.2"
   },
