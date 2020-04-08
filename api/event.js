@@ -1,8 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const tokenAuth = require('middleware/tokenAuth');
-const eventAuth = require('middleware/eventAuth');
-const { EventModel, LocationModel } = require('models');
+const { EventModel, LocationModel } = require('../models');
+const tokenAuth = require('../middleware/tokenAuth');
+const eventAuth = require('../middleware/eventAuth');
 
 const router = express.Router();
 

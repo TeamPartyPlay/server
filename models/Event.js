@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const PlaylistModel = require('models/Playlist');
+const PlaylistModel = require('./Playlist');
 const BaseSchema = require('./BaseSchema');
 
 const { ObjectId } = Schema;

@@ -5,7 +5,7 @@ const app = require('../app');
 const { TEST_USERNAME, TEST_PASSWORD, TEST_EMAIL } = process.env;
 const {
   createTestUser, loginTestUser, deleteTestUser, createTestEvent, joinTestEvent, deleteTestEvent,
-} = require('utils/testing');
+} = require('../utils/testing');
 
 const {
   TEST_EVENT_NAME,

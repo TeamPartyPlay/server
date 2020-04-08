@@ -2,7 +2,7 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const {
   createTestUser, loginTestUser, deleteTestUser, createTestEvent, joinTestEvent, deleteTestEvent,
-} = require('utils/testing');
+} = require('../utils/testing');
 const app = require('../app');
 
 

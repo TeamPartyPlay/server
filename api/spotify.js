@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-const UserModel = require('models/User');
-const SpotifyModel = require('models/Spotify');
-const tokenAuth = require('middleware/tokenAuth');
+const UserModel = require('../models/User');
+const SpotifyModel = require('../models/Spotify');
+const tokenAuth = require('../middleware/tokenAuth');
 
 const { clientId, clientSecret } = process.env;
 

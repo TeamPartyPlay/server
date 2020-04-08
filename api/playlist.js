@@ -1,8 +1,8 @@
 const express = require('express');
-const tokenAuth = require('middleware/tokenAuth');
-const eventAuth = require('middleware/eventAuth');
-const PlaylistModel = require('models/Playlist');
-const TrackModel = require('models/Track');
+const tokenAuth = require('../middleware/tokenAuth');
+const eventAuth = require('../middleware/eventAuth');
+const PlaylistModel = require('../models/Playlist');
+const TrackModel = require('../models/Track');
 
 const router = express.Router();
 
