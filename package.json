@@ -6,7 +6,8 @@
     "start": "node ./server",
     "dev": "nodemon ./server",
     "test": "jest --runInBand --detectOpenHandles",
-    "postinstall": "link-module-alias"
+    "postinstall": "link-module-alias",
+    "heroku-prebuild": "link-module-alias"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
