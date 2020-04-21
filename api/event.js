@@ -36,6 +36,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/all', async (req, res) => {
+  try {
+    const events = await EventModel.find({});
+    return res.send(events);
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+});
+
 // Create new event
 router.post('/', async (req, res) => {
   const {

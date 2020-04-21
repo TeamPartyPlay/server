@@ -10,7 +10,7 @@ const express = require('express');
  */
 const tokenAuth = (req, res, next) => {
   req.user = null;
-  const token = req.cookies.token || req.body.token;
+  const token = req.cookies.token || req.body.token || req.query.token;
   if (token) {
     jwt.verify(token, 'secret', (err, user) => {
       if (!err) {
