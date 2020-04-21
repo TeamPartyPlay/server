@@ -10,8 +10,9 @@ const express = require('express');
  */
 const tokenAuth = (req, res, next) => {
   req.user = null;
-  if (req.cookies.token) {
-    jwt.verify(req.cookies.token, 'secret', (err, user) => {
+  const token = req.cookies.token || req.body.token;
+  if (token) {
+    jwt.verify(token, 'secret', (err, user) => {
       if (!err) {
         req.user = user;
         next();
