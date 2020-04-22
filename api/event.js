@@ -25,21 +25,21 @@ router.get('/', eventAuth, (req, res) => {
   res.send(event);
 });
 
+router.get('/all', async (req, res) => {
+  try {
+    const events = await EventModel.find().lean();
+    return res.send(events);
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+});
+
 // Get event by id
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const event = await EventModel.findById(id).exec();
     return res.send(event);
-  } catch (error) {
-    return res.status(500).send({ error });
-  }
-});
-
-router.get('/all', async (req, res) => {
-  try {
-    const events = await EventModel.find({});
-    return res.send(events);
   } catch (error) {
     return res.status(500).send({ error });
   }
