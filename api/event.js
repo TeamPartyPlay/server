@@ -94,6 +94,8 @@ router.post('/', async (req, res) => {
 router.post('/image', async (req, res) => {
   // https://codeburst.io/asynchronous-file-upload-with-node-and-react-ea2ed47306dd
   // https://medium.com/@alvenw/how-to-store-images-to-mongodb-with-node-js-fb3905c37e6d
+  console.log(req.body);
+  console.log(req.files);
   try {
     const id = req.body.eventId;
     const image = req.files.file;
