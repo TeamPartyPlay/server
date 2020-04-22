@@ -18,6 +18,7 @@ EventSchema.add({
   attendees: [{ type: ObjectId, ref: 'User', default: null }],
   tags: [{ type: String, default: null }],
   playlist: { type: ObjectId, ref: 'Playlist', default: null },
+  image: { type: ObjectId, ref: 'Image', default: null },
 });
 
 EventSchema.post(/^delete|remove/, (doc) => {

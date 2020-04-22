@@ -1,6 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const { EventModel, LocationModel } = require('../models');
+const {
+  EventModel, LocationModel, UserModel, ImageModel,
+} = require('../models');
 const tokenAuth = require('../middleware/tokenAuth');
 const eventAuth = require('../middleware/eventAuth');
 
@@ -27,10 +29,26 @@ router.get('/', eventAuth, (req, res) => {
 
 router.get('/all', async (req, res) => {
   try {
-    const events = await EventModel.find().lean();
+    const events = await EventModel.find().populate('location').lean();
     return res.send(events);
   } catch (error) {
     return res.status(500).send({ error });
+  }
+});
+
+router.get('/image/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id) throw Error('Event not defined');
+    const event = await EventModel.findById(id).populate('image').lean();
+    if (!event) throw Error('Event not defined');
+    else if (event.image) throw Error('Event Image not defined');
+    else {
+      res.contentType(event.image.mimetype);
+      res.end(Buffer.from(event.image.data.buffer, 'base64'));
+    }
+  } catch (error) {
+    res.status(500).send({ error });
   }
 });
 
@@ -70,6 +88,27 @@ router.post('/', async (req, res) => {
     return res.send(event);
   } catch (error) {
     return res.status(500).send({ error });
+  }
+});
+
+router.post('/image', async (req, res) => {
+  // https://codeburst.io/asynchronous-file-upload-with-node-and-react-ea2ed47306dd
+  // https://medium.com/@alvenw/how-to-store-images-to-mongodb-with-node-js-fb3905c37e6d
+  try {
+    const id = req.body.eventId;
+    const image = req.files.file;
+    if (id && image) {
+      const imageModel = new ImageModel();
+      imageModel.data = image.data;
+      imageModel.mimetype = image.mimetype;
+      const imageRes = await imageModel.save();
+      const event = await EventModel.findById(id);
+      await ImageModel.deleteOne({ _id: event.image });
+      event.image = imageModel._id;
+      event.save();
+    } else throw Error('Event or Image is not set');
+  } catch (error) {
+    res.status(500).send({ error });
   }
 });
 
