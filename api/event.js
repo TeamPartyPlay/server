@@ -23,8 +23,7 @@ router.use(tokenAuth);
 
 // Get current event by id
 router.get('/', eventAuth, (req, res) => {
-  const { event } = req;
-  res.send(event);
+  res.send(req.event);
 });
 
 router.get('/all', async (req, res) => {
