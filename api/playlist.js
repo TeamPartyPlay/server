@@ -3,6 +3,7 @@ const tokenAuth = require('../middleware/tokenAuth');
 const eventAuth = require('../middleware/eventAuth');
 const PlaylistModel = require('../models/Playlist');
 const TrackModel = require('../models/Track');
+const EventModel = require('../models/Event');
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', eventAuth, async (req, res) => {
-  const { event } = req;
+  const event = await EventModel.findById(req.event._id);
   const { spotifyId, tracks } = req.body;
   const newTracks = [];
   try {
@@ -78,7 +79,8 @@ router.post('/', eventAuth, async (req, res) => {
 });
 
 router.post('/vote', eventAuth, async (req, res) => {
-  const { event, user } = req;
+  const { user } = req;
+  const event = await EventModel.findById(req.event._id);
   const { playlist } = event;
   const { id } = req.body;
   if (playlist) {
@@ -91,7 +93,7 @@ router.post('/vote', eventAuth, async (req, res) => {
 });
 
 router.post('/add', eventAuth, async (req, res) => {
-  const { event } = req;
+  const event = await EventModel.findById(req.event._id);
   const { playlist } = event;
   const { uri } = req.body;
   try {
@@ -122,7 +124,7 @@ router.post('/add', eventAuth, async (req, res) => {
 //   - owner of event does want that song played at the event
 //   - owner removes song from playlist after moving next song to playlist
 router.post('/remove', eventAuth, async (req, res) => {
-  const { event, user } = req;
+  const event = await EventModel.findById(req.event._id);
   const { playlist } = event;
   const { id } = req.body;
   try {
