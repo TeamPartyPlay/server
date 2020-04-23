@@ -17,7 +17,7 @@ const eventAuth = async (req, res, next) => {
       const event = await EventModel
         .findById(eventId)
         .populate('playlist')
-        .exec();
+        .lean();
       req.event = event;
       next();
     } catch (error) {
