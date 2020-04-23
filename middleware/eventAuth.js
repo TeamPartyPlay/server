@@ -10,7 +10,7 @@ const EventModel = require('../models/Event');
  * @param {express.NextFunction} next Express Next Function
  */
 const eventAuth = async (req, res, next) => {
-  const eventToken = req.cookies.eventToken || req.body.eventToken || req.query.token;
+  const eventToken = req.cookies.eventToken || req.body.eventToken || req.query.eventToken;
   if (eventToken) {
     try {
       const { eventId } = await jwt.verify(eventToken, 'secret');

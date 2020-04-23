@@ -19,12 +19,12 @@ const router = express.Router();
  * |DELETE| `/api/event/:id` | Delete Event by id | Event
  */
 
-router.use(tokenAuth);
-
 // Get current event by id
-router.get('/', eventAuth, (req, res) => {
+router.get('/', tokenAuth, eventAuth, (req, res) => {
   res.send(req.event);
 });
+
+router.use(tokenAuth);
 
 router.get('/all', async (req, res) => {
   try {
