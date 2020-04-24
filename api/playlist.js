@@ -46,7 +46,7 @@ router.post('/', eventAuth, async (req, res) => {
   const { spotifyId, tracks } = req.body;
   const newTracks = [];
   try {
-    if (tracks) {
+    if (typeof tracks === 'object') {
       if (Array.isArray(tracks)) {
         tracks.forEach(async ({ uri, votes }) => {
           const track = new TrackModel({
@@ -56,7 +56,7 @@ router.post('/', eventAuth, async (req, res) => {
           await track.save();
           newTracks.push(track);
         });
-      } else {
+      } else if (tracks) {
         const track = new TrackModel({
           uri: tracks.uri,
           votes: tracks.votes,
