@@ -27,7 +27,12 @@ router.use(tokenAuth);
  * @param {express.Response} res Express Response
  * @returns {express.Response} Express Response
  */
-const getCurrentPlaylist = (req, res) => res.send(req.event.playlist);
+const getCurrentPlaylist = async (req, res) => {
+  const playlist = await PlaylistModel
+    .findById(req.event.playlist._id)
+    .populate('tracks');
+  res.send(playlist);
+};
 
 router.get('/', eventAuth, getCurrentPlaylist);
 
