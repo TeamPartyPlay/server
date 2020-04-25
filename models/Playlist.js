@@ -12,6 +12,7 @@ PlaylistSchema.add({
 });
 
 PlaylistSchema.post(/^update|save/, (doc, next) => {
+  console.log('updating playlist');
   io.emit('updatePlaylist');
   next();
 });

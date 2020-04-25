@@ -21,7 +21,6 @@ const router = express.Router();
 
 // Get current event by id
 router.get('/', tokenAuth, eventAuth, (req, res) => {
-  console.log(req.event);
   res.send(req.event);
 });
 
